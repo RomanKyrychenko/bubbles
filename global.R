@@ -1,0 +1,8 @@
+Sys.setlocale(,"RU_Ru")
+library(shiny)
+library(ggplot2)
+library(readxl)
+library(readr)
+library(png)
+library(grid)
+library(extrafont)
