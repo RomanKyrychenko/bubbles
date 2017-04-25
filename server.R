@@ -1,5 +1,4 @@
 shinyServer(function(input, output){
-  
   df <- reactive({
     inFile <- input$file1
     
@@ -51,7 +50,10 @@ shinyServer(function(input, output){
       img <- readPNG("1.png")
       g <- rasterGrob(readPNG("1.png"), interpolate=TRUE)
       i <- max(c(sqrt(abs(parse_number(unname(unlist(data[2,2:8]))))),sqrt(abs(parse_number(unname(unlist(data[4,2:8]))))),sqrt(abs(parse_number(unname(unlist(data[10,2:8]))))),sqrt(abs(parse_number(unname(unlist(data[12,2:8])))))),na.rm=T)
-      ggplot()+
+      p <- ggplot()+
+        geom_segment(aes(
+          y = -4.5,yend=-4.5,xend=max(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+0.5, x = min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))-0.75),color="#babdbf"
+        )+
         geom_rect(aes(
           xmax = max(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+0.5, xmin = min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))-0.75,ymin=-2.3,ymax=0
         ),fill = '#ebebed')+ 
@@ -59,7 +61,6 @@ shinyServer(function(input, output){
           xmax = max(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+0.5, xmin = min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))-0.75,ymin=0.1,ymax=0.35
         ), fill = '#303d7d')+
         geom_linerange(aes(x= as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"),ymax=0,ymin=-4.5),color="#babdbf")+
-        geom_hline(yintercept = -4.5,color="#babdbf")+
         {if(sum(is.na(ifelse(!is.na(abs(parse_number(unname(unlist(data[2,2:8]))))),as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"),NA)))!=7)geom_segment(
           aes(
             y=-0.8,yend=-0.8,xend= as.Date(na.omit(ifelse(!is.na(abs(parse_number(unname(unlist(data[2,2:8]))))),as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"),NA)),origin = "1970-01-01")+0.4,x= as.Date(na.omit(ifelse(!is.na(abs(parse_number(unname(unlist(data[2,2:8]))))),as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"),NA)),origin = "1970-01-01")-0.4
@@ -193,7 +194,15 @@ shinyServer(function(input, output){
         theme_void(base_family="PT Sans")+
         theme(
           legend.position = "none",
+          text = element_blank(),
+          line = element_blank(),
+          title = element_blank()
         )
+      gt <- ggplot_gtable(ggplot_build(p))
+      ge <- subset(gt$layout, name == "panel")
+      
+      grid.draw(gt[ge$t:ge$b, ge$l:ge$r])
+      p
     }
     bubble(data)
   })
@@ -201,7 +210,7 @@ shinyServer(function(input, output){
       tryCatch(df())
     })
     output$downloadPlot <-  downloadHandler(
-      filename = function(){paste0("bubbles_",Sys.Date(),".pdf") },
+      filename = function(){paste0(stri_trans_general(input$typ,"latin"),Sys.Date(),".pdf") },
       content = function(file) {
         cairo_pdf(file, width=22.22*1.4, height=12.5*1.4)
         print(df())
@@ -210,7 +219,7 @@ shinyServer(function(input, output){
     )
     
     output$download<-  downloadHandler(
-      filename = function(){paste0("bubbles_",Sys.Date(),".png") },
+      filename = function(){paste0(stri_trans_general(input$typ,"latin"),Sys.Date(),".png") },
       content = function(file) {
         png(file, width=2222, height=1250)
         print(df())
