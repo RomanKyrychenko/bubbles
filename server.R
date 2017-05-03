@@ -7,6 +7,7 @@ shinyServer(function(input, output){
     file.rename(inFile$datapath,
                 paste(inFile$datapath, ".xlsx", sep=""))
     data <-read_excel(paste(inFile$datapath, ".xlsx", sep=""), sheet = input$typ,col_names = T)
+    d <-read_excel(paste(inFile$datapath, ".xlsx", sep=""),sheet = "ТВ",col_names = T)
     data[2,2:8]<-ifelse(unname(unlist(data[2,2:8]))==0,NA,unname(unlist(data[2,2:8])))
     data[4,2:8]<-ifelse(unname(unlist(data[4,2:8]))==0,NA,unname(unlist(data[4,2:8])))
     data[10,2:8]<-ifelse(unname(unlist(data[10,2:8]))==0,NA,unname(unlist(data[10,2:8])))
@@ -49,18 +50,22 @@ shinyServer(function(input, output){
       }
       img <- readPNG("1.png")
       g <- rasterGrob(readPNG("1.png"), interpolate=TRUE)
-      i <- max(c(sqrt(abs(parse_number(unname(unlist(data[2,2:8]))))),sqrt(abs(parse_number(unname(unlist(data[4,2:8]))))),sqrt(abs(parse_number(unname(unlist(data[10,2:8]))))),sqrt(abs(parse_number(unname(unlist(data[12,2:8])))))),na.rm=T)
+      i <- max(sqrt(d$Итог),na.rm=T)
+      shrift <- 5.5+(5.7-max(c(nchar(data[3,2:8]),nchar(data[5,2:8]),nchar(data[11,2:8]),nchar(data[13,2:8])),na.rm = T)/26)/2
+      shrift <-ifelse(input$typ!="Президент",shrift,shrift-0.5)
+      otst <- 31+33-shrift*6
+      otst <- ifelse(input$typ!="Президент",otst,otst-6)
       p <- ggplot()+
         geom_segment(aes(
-          y = -4.5,yend=-4.5,xend=max(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+0.5, x = min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))-0.75),color="#babdbf"
+          y = -4.5,yend=-4.5,xend=max(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+0.6, x = min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))-0.75),color="#babdbf"
         )+
         geom_rect(aes(
-          xmax = max(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+0.5, xmin = min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))-0.75,ymin=-2.3,ymax=0
+          xmax = max(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+0.6, xmin = min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))-0.75,ymin=-2.3,ymax=-0.2
         ),fill = '#ebebed')+ 
         geom_rect(aes(
-          xmax = max(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+0.5, xmin = min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))-0.75,ymin=0.1,ymax=0.35
+          xmax = max(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+0.6, xmin = min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))-0.75,ymin=-0.1,ymax=0.15
         ), fill = '#303d7d')+
-        geom_linerange(aes(x= as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"),ymax=0,ymin=-4.5),color="#babdbf")+
+        geom_linerange(aes(x= as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"),ymax=-0.2,ymin=-4.5),color="#babdbf")+
         {if(sum(is.na(ifelse(!is.na(abs(parse_number(unname(unlist(data[2,2:8]))))),as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"),NA)))!=7)geom_segment(
           aes(
             y=-0.8,yend=-0.8,xend= as.Date(na.omit(ifelse(!is.na(abs(parse_number(unname(unlist(data[2,2:8]))))),as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"),NA)),origin = "1970-01-01")+0.4,x= as.Date(na.omit(ifelse(!is.na(abs(parse_number(unname(unlist(data[2,2:8]))))),as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"),NA)),origin = "1970-01-01")-0.4
@@ -131,56 +136,56 @@ shinyServer(function(input, output){
         geom_text(aes(y=-5.5,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1]-0.32,label="Internet"),family="PT Sans", fontface = "bold",color="#303d7d",hjust=0,size=6)+
         geom_text(aes(y=-5.7,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1]-0.32,label="Разом:"),family="PT Sans", fontface = "bold",color="white",hjust=0,size=6)+
         geom_rect(aes(
-          xmax = max(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))-4.9, xmin = min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+2.6,ymin=-5.2,ymax=-5
+          xmax = max(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))-4.9, xmin = min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+ifelse(input$typ!="Президент",2.6,2.1),ymin=-5.2,ymax=-5
         ),fill=NA,color="#babdbf")+
         geom_rect(aes(
-          xmax = max(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))-4.9, xmin = min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+2.6,ymin=-5.4,ymax=-5.2
+          xmax = max(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))-4.9, xmin = min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+ifelse(input$typ!="Президент",2.6,2.1),ymin=-5.4,ymax=-5.2
         ),fill="#d8d9da",color="#babdbf")+
         geom_rect(aes(
-          xmax = max(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))-4.9, xmin = min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+2.6,ymin=-5.6,ymax=-5.4
+          xmax = max(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))-4.9, xmin = min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+ifelse(input$typ!="Президент",2.6,2.1),ymin=-5.6,ymax=-5.4
         ),fill=NA,color="#babdbf")+
         geom_rect(aes(
-          xmax = max(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))-4.9, xmin = min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+2.6,ymin=-5.8,ymax=-5.6
+          xmax = max(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))-4.9, xmin = min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+ifelse(input$typ!="Президент",2.6,2.1),ymin=-5.8,ymax=-5.6
         ),fill="#808083",color="#babdbf")+
         geom_segment(aes(
-          y=-5,yend=-5.8,xend=min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+2.1,x=min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+2.1
+          y=-5,yend=-5.8,xend=min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+ifelse(input$typ!="Президент",2.1,1.6),x=min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+ifelse(input$typ!="Президент",2.1,1.6)
         ),color="#babdbf")+
-        geom_segment(aes(
+        {if(input$typ!="Президент")geom_segment(aes(
           y=-5,yend=-5.8,xend=min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+1.6,x=min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+1.6
-        ),color="#babdbf")+
-        geom_text(aes(y=-5.3,min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+2.35,label=format(parse_number(unname(unlist(data[18,4]))),big.mark=" ")),family="PT Sans", fontface = "bold",color="#a31e22",size=6)+
-        geom_text(aes(y=-5.5,min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+2.35,label=format(parse_number(unname(unlist(data[19,4]))),big.mark=" ")),family="PT Sans", fontface = "bold",color="#a31e22",size=6)+
-        geom_text(aes(y=-5.7,min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+2.35,label=format(parse_number(unname(unlist(data[20,4]))),big.mark=" ")),family="PT Sans", fontface = "bold",color="white",size=6)+
-        geom_text(aes(y=-5.3,min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+1.85,label=format(parse_number(unname(unlist(data[18,5]))),big.mark=" ")),family="PT Sans", fontface = "bold",color="#303d7d",size=6)+
-        geom_text(aes(y=-5.5,min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+1.85,label=format(parse_number(unname(unlist(data[19,5]))),big.mark=" ")),family="PT Sans", fontface = "bold",color="#303d7d",size=6)+
-        geom_text(aes(y=-5.7,min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+1.85,label=format(parse_number(unname(unlist(data[20,5]))),big.mark=" ")),family="PT Sans", fontface = "bold",color="white",size=6)+
-        geom_text(aes(y=-5.1,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1]+1.85,label="Нейтрально"),family="PT Sans", fontface = "bold",color="#303d7d",size=6)+
-        geom_text(aes(y=-5.1,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1]+2.35,label="Негативно"),family="PT Sans", fontface = "bold",color="#a31e22",size=6)+
-        geom_text(aes(y=-5.3,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1]+1.28,label="TV"),family="PT Sans", fontface = "bold",hjust=0,color="#303d7d",size=6)+
-        geom_text(aes(y=-5.5,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1]+1.28,label="Internet"),family="PT Sans", fontface = "bold",hjust=0,color="#303d7d",size=6)+
-        geom_text(aes(y=-5.7,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1]+1.28,label="Разом:"),family="PT Sans", fontface = "bold",hjust=0,color="white",size=6)+
-        geom_text(aes(y=-4.95,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1]-0.5,label="Контакти з аудиторією"),size=7, lineheight=0.7,hjust=0,vjust=0,family="PT Sans",color="#babdbf")+
-        geom_text(aes(y=-4.95,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1]+1.1,label="Кількість матеріалів"),size=7, lineheight=0.7,hjust=0,vjust=0,family="PT Sans",color="#babdbf")+
-        geom_text(aes(y=0.14,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1]-0.7,label=paste0(person_name,". Характеристика інформаційного поля за ",input$period)),size=13, lineheight=0.7,hjust=0,vjust=0,family="PT Sans",color="white")+
+        ),color="#babdbf")}+
+        geom_text(aes(y=-5.3,min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+ifelse(input$typ!="Президент",2.35,1.85),label=format(parse_number(unname(unlist(data[18,4]))),big.mark=" ")),family="PT Sans", fontface = "bold",color="#a31e22",size=6)+
+        geom_text(aes(y=-5.5,min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+ifelse(input$typ!="Президент",2.35,1.85),label=format(parse_number(unname(unlist(data[19,4]))),big.mark=" ")),family="PT Sans", fontface = "bold",color="#a31e22",size=6)+
+        geom_text(aes(y=-5.7,min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+ifelse(input$typ!="Президент",2.35,1.85),label=format(parse_number(unname(unlist(data[20,4]))),big.mark=" ")),family="PT Sans", fontface = "bold",color="white",size=6)+
+        geom_text(aes(y=-5.3,min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+ifelse(input$typ!="Президент",1.85,1.35),label=format(parse_number(unname(unlist(data[18,5]))),big.mark=" ")),family="PT Sans", fontface = "bold",color="#303d7d",size=6)+
+        geom_text(aes(y=-5.5,min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+ifelse(input$typ!="Президент",1.85,1.35),label=format(parse_number(unname(unlist(data[19,5]))),big.mark=" ")),family="PT Sans", fontface = "bold",color="#303d7d",size=6)+
+        geom_text(aes(y=-5.7,min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+ifelse(input$typ!="Президент",1.85,1.35),label=format(parse_number(unname(unlist(data[20,5]))),big.mark=" ")),family="PT Sans", fontface = "bold",color="white",size=6)+
+        geom_text(aes(y=-5.1,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1]+ifelse(input$typ!="Президент",1.85,1.35),label="Нейтрально"),family="PT Sans", fontface = "bold",color="#303d7d",size=6)+
+        geom_text(aes(y=-5.1,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1]+ifelse(input$typ!="Президент",2.35,1.85),label="Негативно"),family="PT Sans", fontface = "bold",color="#a31e22",size=6)+
+        {if(input$typ!="Президент")geom_text(aes(y=-5.3,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1]+1.28,label="TV"),family="PT Sans", fontface = "bold",hjust=0,color="#303d7d",size=6)}+
+        {if(input$typ!="Президент")geom_text(aes(y=-5.5,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1]+1.28,label="Internet"),family="PT Sans", fontface = "bold",hjust=0,color="#303d7d",size=6)}+
+        {if(input$typ!="Президент")geom_text(aes(y=-5.7,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1]+1.28,label="Разом:"),family="PT Sans", fontface = "bold",hjust=0,color="white",size=6)}+
+        geom_text(aes(y=-4.95,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1]-0.5,label="Контакти з аудиторією"),size=7, lineheight=0.7,hjust=0,vjust=0,family="PT Sans",color="#808083")+
+        geom_text(aes(y=-4.95,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1]+1.1,label="Кількість матеріалів"),size=7, lineheight=0.7,hjust=0,vjust=0,family="PT Sans",color="#808083")+
+        geom_text(aes(y=-0.04,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1]-0.7,label=paste0(person_name,". Характеристика інформаційного поля за ",input$period)),size=13, lineheight=0.7,hjust=0,vjust=0,family="PT Sans",color="white")+
         geom_text(aes(y=-6,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1]-0.5,label=paste0("Тижневий огляд інформаційного поля АПУ // ",input$period," // ",format(Sys.Date(), "%d.%m.%Y"))),size=7, lineheight=0.8,hjust=0,vjust=0,family="PT Sans",color="#babdbf")+
-        geom_point(aes(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"),-1),size=sqrt(abs(parse_number(unname(unlist(data[2,2:8])))))/i*20,color=
+        geom_point(aes(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"),-1),size=sqrt(abs(parse_number(unname(unlist(data[2,2:8])))))/i*30,color=
                      ifelse(parse_number(unname(unlist(data[2,2:8])))>0,"#303d7d","#a31e22"))+
         geom_text(aes(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"),-1.2,label=format(abs(parse_number(unname(unlist(data[2,2:8])))),  big.mark=" ")),color=
                     ifelse(parse_number(unname(unlist(data[2,2:8])))>0,"#303d7d","#a31e22"),family="PT Sans",size=6)+
-        geom_text(aes(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")-0.4,-0.75,label=unlist(unname(sapply(data[3,2:8],function(x) paste(strwrap(gsub("((","",unname(unlist(x)), fixed="TRUE"),30), collapse="\n"))))),size=5, lineheight=0.9,hjust=0,vjust=0,family="PT Sans",color=
+        geom_text(aes(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")-0.4,-0.75,label=unlist(unname(sapply(data[3,2:8],function(x) paste(strwrap(gsub("((","",unname(unlist(x)), fixed="TRUE"),otst), collapse="\n"))))),size=ifelse(nchar(unlist(unname(data[3,2:8])))<100,ifelse(input$typ!="Президент",6,5.5),shrift), lineheight=0.9,hjust=0,vjust=0,family="PT Sans",color=
                     ifelse(parse_number(unname(unlist(data[2,2:8])))>0,"black","#a31e22"))+
-        geom_point(aes(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"),-2),size=sqrt(parse_number(unname(unlist(data[4,2:8]))))/i*20,color=
+        geom_point(aes(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"),-2),size=sqrt(parse_number(unname(unlist(data[4,2:8]))))/i*30,color=
                      ifelse(parse_number(unname(unlist(data[4,2:8])))>0,"#303d7d","#a31e22"))+
         geom_text(aes(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"),-2.2,label=format(parse_number(unname(unlist(data[4,2:8]))),  big.mark=" ")),color=
                     ifelse(parse_number(unname(unlist(data[4,2:8])))>0,"#303d7d","#a31e22"),family="PT Sans",size=6)+
-        geom_text(aes(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")-0.4,-1.75,label=unlist(unname(sapply(data[5,2:8],function(x) paste(strwrap(gsub("((","",unname(unlist(x)), fixed="TRUE"),30), collapse="\n"))))),size=5, lineheight=0.9,hjust=0,vjust=0,family="PT Sans",color=
+        geom_text(aes(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")-0.4,-1.75,label=unlist(unname(sapply(data[5,2:8],function(x) paste(strwrap(gsub("((","",unname(unlist(x)), fixed="TRUE"),otst), collapse="\n"))))),size=ifelse(nchar(unlist(unname(data[5,2:8])))<100,ifelse(input$typ!="Президент",6,5.5),shrift), lineheight=0.9,hjust=0,vjust=0,family="PT Sans",color=
                     ifelse(parse_number(unname(unlist(data[4,2:8])))>0,"black","#a31e22"))+
-        geom_point(aes(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"),-3),size=sqrt(parse_number(unname(unlist(data[10,2:8]))))/i*20,color="#303d7d")+
+        geom_point(aes(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"),-3),size=sqrt(parse_number(unname(unlist(data[10,2:8]))))/i*30,color="#303d7d")+
         geom_text(aes(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"),-3.2,label=ifelse(grepl("NA",format(-parse_number(unname(unlist(data[10,2:8]))))),NA,format(parse_number(unname(unlist(data[10,2:8]))),  big.mark=" "))),color="#303d7d",family="PT Sans",size=6)+
-        geom_text(aes(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")-0.4,-2.75,label=ifelse(unlist(unname(sapply(data[11,2:8],function(x) paste(strwrap(gsub("((","",unname(unlist(x)), fixed="TRUE"),30), collapse="\n"))))=="NA",NA,unlist(unname(sapply(data[11,2:8],function(x) paste(strwrap(gsub("((","",unname(unlist(x)), fixed="TRUE"),30), collapse="\n")))))),color="black",size=5, lineheight=0.9,hjust=0,vjust=0,family="PT Sans")+
-        geom_point(aes(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"),-4),size=sqrt((-parse_number(unname(unlist(data[12,2:8])))))/i*20,color="#a31e22")+
+        geom_text(aes(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")-0.4,-2.75,label=ifelse(unlist(unname(sapply(data[11,2:8],function(x) paste(strwrap(gsub("((","",unname(unlist(x)), fixed="TRUE"),30), collapse="\n"))))=="NA",NA,unlist(unname(sapply(data[11,2:8],function(x) paste(strwrap(gsub("((","",unname(unlist(x)), fixed="TRUE"),otst), collapse="\n")))))),color="black",size=ifelse(nchar(unlist(unname(data[11,2:8])))<100,ifelse(input$typ!="Президент",6,5.5),shrift), lineheight=0.9,hjust=0,vjust=0,family="PT Sans")+
+        geom_point(aes(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"),-4),size=sqrt((-parse_number(unname(unlist(data[12,2:8])))))/i*30,color="#a31e22")+
         geom_text(aes(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"),-4.2,label=ifelse(grepl("NA",format(-parse_number(unname(unlist(data[12,2:8]))))),NA,format(-parse_number(unname(unlist(data[12,2:8]))),  big.mark=" "))),color="#a31e22",family="PT Sans",size=6)+
-        geom_text(aes(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")-0.4,-3.75,label=ifelse(unlist(unname(sapply(data[13,2:8],function(x) paste(strwrap(gsub("((","",unname(unlist(x)), fixed="TRUE"),30), collapse="\n"))))=="NA",NA,unlist(unname(sapply(data[13,2:8],function(x) paste(strwrap(gsub("((","",unname(unlist(x)), fixed="TRUE"),30), collapse="\n")))))),color="#a31e22",size=5, lineheight=0.9,hjust=0,vjust=0,family="PT Sans")+
+        geom_text(aes(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")-0.4,-3.75,label=ifelse(unlist(unname(sapply(data[13,2:8],function(x) paste(strwrap(gsub("((","",unname(unlist(x)), fixed="TRUE"),30), collapse="\n"))))=="NA",NA,unlist(unname(sapply(data[13,2:8],function(x) paste(strwrap(gsub("((","",unname(unlist(x)), fixed="TRUE"),otst), collapse="\n")))))),color="#a31e22",size=ifelse(nchar(unlist(unname(data[13,2:8])))<100,ifelse(input$typ!="Президент",6,5.5),shrift), lineheight=0.9,hjust=0,vjust=0,family="PT Sans")+
         geom_point(aes(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"),-4.5,size=colSums(rbind(parse_number(unname(unlist(data[2,2:8]))),parse_number(unname(unlist(data[4,2:8]))),parse_number(unname(unlist(data[10,2:8]))),parse_number(unname(unlist(data[12,2:8])))),na.rm = T)),shape=22,color="#babdbf",fill=c("#babdbf","#babdbf","#babdbf","#babdbf","#babdbf","white","white"))+
         geom_text(aes(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"),-4.6,label=substr(as.character(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")),9,10)),color="#a31e22",family="PT Sans", fontface = "bold",size=6)+
         annotation_custom(g, xmin=as.numeric(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1])-0.7, xmax=as.numeric(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1])-0.55, ymin=-2.2, ymax=-2)+
@@ -192,6 +197,7 @@ shinyServer(function(input, output){
         annotation_custom(rasterGrob(readPNG("3.png"), interpolate=TRUE), xmin=as.numeric(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1])+1.25, xmax=as.numeric(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1])+1.15, ymin=-5.75, ymax=-5.65)+
         annotation_custom(rasterGrob(readPNG("3.png"), interpolate=TRUE), xmin=as.numeric(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1])-0.45, xmax=as.numeric(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1])-0.35, ymin=-5.75, ymax=-5.65)+
         theme_void(base_family="PT Sans")+
+        scale_x_date(expand = c(0,0)) + scale_y_continuous(expand = c(0,0)) +
         theme(
           legend.position = "none",
           text = element_blank(),
@@ -212,7 +218,7 @@ shinyServer(function(input, output){
     output$downloadPlot <-  downloadHandler(
       filename = function(){paste0(stri_trans_general(input$typ,"latin"),Sys.Date(),".pdf") },
       content = function(file) {
-        cairo_pdf(file, width=22.22*1.4, height=12.5*1.4)
+        cairo_pdf(file, width=ifelse(input$typ=="Президент",1875,2222)/100*1.4, height=12.5*1.4)
         print(df())
         dev.off()
       }
@@ -221,7 +227,7 @@ shinyServer(function(input, output){
     output$download<-  downloadHandler(
       filename = function(){paste0(stri_trans_general(input$typ,"latin"),Sys.Date(),".png") },
       content = function(file) {
-        png(file, width=2222, height=1250)
+        png(file, width=ifelse(input$typ=="Президент",1875,2222), height=1250)
         print(df())
         dev.off()
       }
