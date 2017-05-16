@@ -6,9 +6,9 @@ library(png)
 library(grid)
 library(extrafont)
 
-#data <- read_excel("~/points/Копия-Копия-Персоны_Шарики_Игорь-15.xlsx", sheet = "Райнин")
+#data <- read_excel("~/points/Копия-Копия-Персоны_Шарики_Игорь-15.xlsx", sheet = "Гройсман")
 i <- max(c(sqrt(abs(parse_number(unname(unlist(data[2,2:8]))))),sqrt(abs(parse_number(unname(unlist(data[4,2:8])))))),na.rm=t)
-ggplot()+
+p <- ggplot()+
   geom_rect(aes(
     xmax = max(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))+0.5, xmin = min(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23"))-0.5,ymin=-2.3,ymax=0
   ),fill = '#ebebed')+ 
@@ -147,11 +147,20 @@ ggplot()+
   annotation_custom(rasterGrob(readPNG("3.png"), interpolate=TRUE), xmin=as.numeric(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1])+1.2, xmax=as.numeric(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1])+1.1, ymin=-5.75, ymax=-5.65)+
   annotation_custom(rasterGrob(readPNG("3.png"), interpolate=TRUE), xmin=as.numeric(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1])-0.5, xmax=as.numeric(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-23")[1])-0.4, ymin=-5.75, ymax=-5.65)+
   theme_void(base_family="PT Sans")+
+#scale_x_date(expand = c(0,0)) + scale_y_continuous(expand = c(0,0)) +
   theme(
     legend.position = "none",
-  )
+    text = element_blank(),
+    line = element_blank(),
+    title = element_blank())
 
+gt <- ggplot_gtable(ggplot_build(p))
+ge <- subset(gt$layout, name == "panel")
 
+grid.draw(gt[ge$t:ge$b, ge$l:ge$r])
+
+img <- readPNG("1.png")
+g <- rasterGrob(readPNG("1.png"), interpolate=TRUE)
 
 
 ggplot() +
