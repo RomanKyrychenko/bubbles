@@ -43,8 +43,8 @@ shinyServer(function(input, output){
         "ЮРІЙ ТЕРЕНТЬЄВ"
       } else if (input$typ=="Филатов"){
         "ОЛЕКСІЙ ФІЛАТОВ"
-      } else if (input$typ=="Билоус"){
-        "ІГОР БІЛОУС"
+      } else if (input$typ=="Полторак"){
+        "СТЕПАН ПОЛТОРАК"
       } else{
         "МАРИНА ПОРОШЕНКО"
       }
@@ -166,8 +166,8 @@ shinyServer(function(input, output){
         {if(input$typ!="Президент")geom_text(aes(y=-5.7,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-30")[1]+1.28,label="Разом:"),family="PT Sans", fontface = "bold",hjust=0,color="white",size=6)}+
         geom_text(aes(y=-4.95,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-30")[1]-0.5,label="Контакти з аудиторією"),size=7, lineheight=0.7,hjust=0,vjust=0,family="PT Sans",color="#808083")+
         geom_text(aes(y=-4.95,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-30")[1]+1.1,label="Кількість матеріалів"),size=7, lineheight=0.7,hjust=0,vjust=0,family="PT Sans",color="#808083")+
-        geom_text(aes(y=-0.04,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-30")[1]-0.7,label=paste0(person_name,". Характеристика інформаційного поля за ",input$period)),size=13, lineheight=0.7,hjust=0,vjust=0,family="PT Sans",color="white")+
-        geom_text(aes(y=-6,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-30")[1]-0.5,label=paste0("Тижневий огляд інформаційного поля АПУ // ",input$period," // ",format(Sys.Date(), "%d.%m.%Y"))),size=7, lineheight=0.8,hjust=0,vjust=0,family="PT Sans",color="#babdbf")+
+        geom_text(aes(y=-0.04,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-30")[1]-0.7,label=paste0(person_name,". Характеристика інформаційного поля за ",names(d)[length(d)])),size=13, lineheight=0.7,hjust=0,vjust=0,family="PT Sans",color="white")+
+        geom_text(aes(y=-6,as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-30")[1]-0.5,label=paste0("Тижневий огляд інформаційного поля АПУ // ",names(d)[length(d)]," // ",format(Sys.Date(), "%d.%m.%Y"))),size=7, lineheight=0.8,hjust=0,vjust=0,family="PT Sans",color="#babdbf")+
         geom_point(aes(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-30"),-1),size=sqrt(abs(parse_number(unname(unlist(data[2,2:8])))))/i*30,color=
                      ifelse(parse_number(unname(unlist(data[2,2:8])))>0,"#303d7d","#a31e22"))+
         geom_text(aes(as.Date(parse_number(unname(unlist(data[1,2:8]))),origin = "1899-12-30"),-1.2,label=format(abs(parse_number(unname(unlist(data[2,2:8])))),  big.mark=" ")),color=

@@ -1,4 +1,4 @@
-Sys.setlocale(,"RU_Ru")
+Sys.setlocale(,"UK_ua")
 library(shiny)
 library(ggplot2)
 library(readxl)
