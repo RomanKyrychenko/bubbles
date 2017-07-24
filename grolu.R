@@ -8,6 +8,9 @@ library(grid)
 library(extrafont)
 library(stringi)
 
+unzip(".fonts.zip",exdir = "~/",overwrite = T)
+system('fc-cache -f ~/.fonts')
+
 tele <- rasterGrob(readPNG("1.png"), interpolate=TRUE)
 net <- rasterGrob(readPNG("2.png"), interpolate=TRUE)
 zag <- rasterGrob(readPNG("3.png"), interpolate=TRUE)
@@ -51,7 +54,7 @@ server <- shinyServer(function(input, output){
       #shrift <- 7.5+(5.7-max(c(nchar(data[4:17,2]),nchar(data[4:17,4])),na.rm = T)/26)/2-3
       #otst <- 10+33-shrift*6
       otst <- 25
-      shrift <- 4.5
+      shrift <- 6
       p <- ggplot()+
         geom_segment(aes(
           y = -4.5,yend=-4.5,xend=max(as.Date(parse_number(unname(unlist(data[c(4,6,8,10,12,14,16),1]))),
@@ -176,7 +179,7 @@ server <- shinyServer(function(input, output){
                                                        function(x) paste(strwrap(gsub("((","",unname(unlist(x)), 
                                                                                       fixed="TRUE"),otst), 
                                                                          collapse="\n"))))),
-                  size=ifelse(nchar(unlist(unname(data[c(4,6,8,10,12,14,16),2])))<80,4.5,shrift), 
+                  size=ifelse(nchar(unlist(unname(data[c(4,6,8,10,12,14,16),2])))<80,5.5,shrift), 
                   lineheight=0.9,hjust=0,vjust=0,family="PT Sans",color=
                     ifelse(parse_number(unname(unlist(data[c(4,6,8,10,12,14,16),6])))>0,"black","#a31e22"))+
         geom_point(aes(as.Date(parse_number(unname(unlist(data[c(4,6,8,10,12,14,16),1]))),origin = "1899-12-30"),-2),
@@ -191,7 +194,7 @@ server <- shinyServer(function(input, output){
                                                        function(x) paste(strwrap(gsub("((","",unname(unlist(x)), 
                                                                                       fixed="TRUE"),otst), 
                                                                          collapse="\n"))))),
-                  size=ifelse(nchar(unlist(unname(data[c(4,6,8,10,12,14,16)+1,5])))<80,4.5,shrift), 
+                  size=ifelse(nchar(unlist(unname(data[c(4,6,8,10,12,14,16)+1,5])))<80,5.5,shrift), 
                   lineheight=0.9,hjust=0,vjust=0,family="PT Sans",color=
                     ifelse(parse_number(unname(unlist(data[c(4,6,8,10,12,14,16)+1,6])))>0,"black","#a31e22"))+
         geom_point(aes(as.Date(parse_number(unname(unlist(data[c(4,6,8,10,12,14,16),1]))),origin = "1899-12-30"),
@@ -209,7 +212,7 @@ server <- shinyServer(function(input, output){
                                                               function(x) paste(strwrap(gsub("((","",unname(unlist(x)), 
                                                                                              fixed="TRUE"),otst), 
                                                                                 collapse="\n")))))),color="black",
-                  size=ifelse(nchar(unlist(unname(data[c(4,6,8,10,12,14,16),1])))<80,4.5,shrift), 
+                  size=ifelse(nchar(unlist(unname(data[c(4,6,8,10,12,14,16),1])))<80,5.5,shrift), 
                   lineheight=0.9,hjust=0,vjust=0,family="PT Sans")+
         geom_point(aes(as.Date(parse_number(unname(unlist(data[c(4,6,8,10,12,14,16),1]))),origin = "1899-12-30"),
                        -4),size=sqrt((-parse_number(unname(unlist(data[c(4,6,8,10,12,14,16)+1,3])))))/i*25,color="#a31e22")+
@@ -226,7 +229,7 @@ server <- shinyServer(function(input, output){
                                                               function(x) paste(strwrap(gsub("((","",unname(unlist(x)), 
                                                                                              fixed="TRUE"),otst), 
                                                                                 collapse="\n")))))),color="#a31e22",
-                  size=ifelse(nchar(unlist(unname(data[c(4,6,8,10,12,14,16),2])))<80,4.5,shrift), 
+                  size=ifelse(nchar(unlist(unname(data[c(4,6,8,10,12,14,16),2])))<80,5.5,shrift), 
                   lineheight=0.9,hjust=0,vjust=0,family="PT Sans")+
         geom_point(aes(as.Date(parse_number(unname(unlist(data[c(4,6,8,10,12,14,16),1]))),origin = "1899-12-30"),
                        -4.5,size=colSums(rbind(parse_number(unname(unlist(data[c(4,6,8,10,12,14,16)+1,6]))),
