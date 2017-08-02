@@ -22,6 +22,7 @@ ui <- shinyUI(fluidPage(
       fileInput('file1', 'Завантажте файл з даними',
                 accept = c(".xlsx")),
       tags$hr(),
+      sliderInput("shrift",label = "Відрегулюйте шрифт",min=4,max=8,value = 5.5,step = 0.5),
       downloadButton('downloadPlot',"Завантажити в pdf!"),
       downloadButton('download',"Завантажити в png!")
     ),
@@ -179,7 +180,7 @@ server <- shinyServer(function(input, output){
                                                        function(x) paste(strwrap(gsub("((","",unname(unlist(x)), 
                                                                                       fixed="TRUE"),otst), 
                                                                          collapse="\n"))))),
-                  size=ifelse(nchar(unlist(unname(data[c(4,6,8,10,12,14,16),2])))<80,5.5,shrift), 
+                  size=ifelse(nchar(unlist(unname(data[c(4,6,8,10,12,14,16),2])))<80,input$shrift,shrift), 
                   lineheight=0.9,hjust=0,vjust=0,family="PT Sans",color=
                     ifelse(parse_number(unname(unlist(data[c(4,6,8,10,12,14,16),6])))>0,"black","#a31e22"))+
         geom_point(aes(as.Date(parse_number(unname(unlist(data[c(4,6,8,10,12,14,16),1]))),origin = "1899-12-30"),-2),
@@ -194,7 +195,7 @@ server <- shinyServer(function(input, output){
                                                        function(x) paste(strwrap(gsub("((","",unname(unlist(x)), 
                                                                                       fixed="TRUE"),otst), 
                                                                          collapse="\n"))))),
-                  size=ifelse(nchar(unlist(unname(data[c(4,6,8,10,12,14,16)+1,5])))<80,5.5,shrift), 
+                  size=ifelse(nchar(unlist(unname(data[c(4,6,8,10,12,14,16)+1,5])))<80,input$shrift,shrift), 
                   lineheight=0.9,hjust=0,vjust=0,family="PT Sans",color=
                     ifelse(parse_number(unname(unlist(data[c(4,6,8,10,12,14,16)+1,6])))>0,"black","#a31e22"))+
         geom_point(aes(as.Date(parse_number(unname(unlist(data[c(4,6,8,10,12,14,16),1]))),origin = "1899-12-30"),
@@ -212,7 +213,7 @@ server <- shinyServer(function(input, output){
                                                               function(x) paste(strwrap(gsub("((","",unname(unlist(x)), 
                                                                                              fixed="TRUE"),otst), 
                                                                                 collapse="\n")))))),color="black",
-                  size=ifelse(nchar(unlist(unname(data[c(4,6,8,10,12,14,16),1])))<80,5.5,shrift), 
+                  size=ifelse(nchar(unlist(unname(data[c(4,6,8,10,12,14,16),1])))<80,input$shrift,shrift), 
                   lineheight=0.9,hjust=0,vjust=0,family="PT Sans")+
         geom_point(aes(as.Date(parse_number(unname(unlist(data[c(4,6,8,10,12,14,16),1]))),origin = "1899-12-30"),
                        -4),size=sqrt((-parse_number(unname(unlist(data[c(4,6,8,10,12,14,16)+1,3])))))/i*25,color="#a31e22")+
@@ -229,7 +230,7 @@ server <- shinyServer(function(input, output){
                                                               function(x) paste(strwrap(gsub("((","",unname(unlist(x)), 
                                                                                              fixed="TRUE"),otst), 
                                                                                 collapse="\n")))))),color="#a31e22",
-                  size=ifelse(nchar(unlist(unname(data[c(4,6,8,10,12,14,16),2])))<80,5.5,shrift), 
+                  size=ifelse(nchar(unlist(unname(data[c(4,6,8,10,12,14,16),2])))<80,input$shrift,shrift), 
                   lineheight=0.9,hjust=0,vjust=0,family="PT Sans")+
         geom_point(aes(as.Date(parse_number(unname(unlist(data[c(4,6,8,10,12,14,16),1]))),origin = "1899-12-30"),
                        -4.5,size=colSums(rbind(parse_number(unname(unlist(data[c(4,6,8,10,12,14,16)+1,6]))),
